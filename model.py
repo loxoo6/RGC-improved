@@ -12,8 +12,8 @@ class my_model(nn.Module):
 
         self.adj = adj
 
-        # self.gat1 = GAT(nfeat=dims[0], nhid=16, nclass=dims[0], dropout=0.3, alpha=0.2, nheads=1)
-        # self.gat2 = GAT(nfeat=dims[0], nhid=16, nclass=dims[0], dropout=0.3, alpha=0.2, nheads=1)
+        self.gat1 = GAT(nfeat=dims[0], nhid=16, nclass=dims[0], dropout=0.3, alpha=0.2, nheads=1)
+        self.gat2 = GAT(nfeat=dims[0], nhid=16, nclass=dims[0], dropout=0.3, alpha=0.2, nheads=1)
 
         self.lin1 = nn.Linear(dims[0], dims[1])
         self.lin2 = nn.Linear(dims[0], dims[1])
@@ -30,15 +30,15 @@ class my_model(nn.Module):
         self.lin2.reset_parameters()
 
     def forward(self, x):
-        # self.adj = self.adj.to(x.device)
-        # gatx1 = self.gat1(x, self.adj)
-        # gatx2 = self.gat2(x, self.adj)
+        self.adj = self.adj.to(x.device)
+        gatx1 = self.gat1(x, self.adj)
+        gatx2 = self.gat2(x, self.adj)
 
-        out1 = self.activate(self.lin1(x))
-        out2 = self.activate(self.lin2(x))
+        # out1 = self.activate(self.lin1(x))
+        # out2 = self.activate(self.lin2(x))
 
-        out1 = F.normalize(out1, dim=1, p=2)
-        out2 = F.normalize(out2, dim=1, p=2)
+        out1 = F.normalize(gatx1, dim=1, p=2)
+        out2 = F.normalize(gatx2, dim=1, p=2)
 
         return out1, out2
 
